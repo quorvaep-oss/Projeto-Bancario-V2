@@ -1,0 +1,14 @@
+version: '3.8' # Define a versão do Docker Compose
+
+services:
+  # --- SERVIÇO 1: O Banco de Dados ---
+  banco-db:
+    image: mysql:8.0
+    container_name: banco-db
+    restart: always
+    environment:
+      # Aqui você define as credenciais que o banco exige
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bancoMaster
+    ports:
+      - "3306:3306" # Ex: "3306:3306"
