@@ -39,12 +39,8 @@ public class ContaController {
 
     @PostMapping("/transferir")
     public String transferir(@RequestParam Long de, @RequestParam Long para, @RequestParam @Positive(message = "O valor deve ser maior que zero.") Double valor){
-        try{
-            service.transferir(de, para, valor);
-            return "Transferencia realizada com sucesso";
-        } catch (RuntimeException e){
-            return "Erro: " + e.getMessage();
-        }
+       service.transferir(de, para, valor);
+       return "Transferencia realizada!";
     }
 
     @GetMapping("/{id}/extrato")
