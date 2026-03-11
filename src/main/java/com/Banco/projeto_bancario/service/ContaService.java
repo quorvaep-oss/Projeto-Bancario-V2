@@ -20,9 +20,10 @@ public class ContaService {
 
     @Transactional
     public void transferir(Long idOrigem, Long idDestino, Double valor){
-        Conta origem = repository.findById(idOrigem).orElseThrow(() -> new RuntimeException("Conta de origem não encontrada!"));
 
-        Conta destino = repository.findById(idDestino).orElseThrow(() -> new RuntimeException("Conta de destino não encontrada!"));
+        Conta origem = repository.findByIdAndAtivoTrue(idOrigem).orElseThrow(() -> new RuntimeException("Conta de origem não encontrada!"));
+
+        Conta destino = repository.findByIdAndAtivoTrue(idDestino).orElseThrow(() -> new RuntimeException("Conta de destino não encontrada!"));
 
 
         if(origem.getSaldo() < valor){
@@ -49,5 +50,12 @@ public class ContaService {
 
         repository.save(origem);
         repository.save(destino);
+    }
+
+    public void desativarConta(Long id){
+        Conta conta = repository.findById(id).orElseThrow(() -> new RuntimeException("Conta não encontrada!"));
+
+        conta.setAtivo(false);
+        repository.save(conta);
     }
 }

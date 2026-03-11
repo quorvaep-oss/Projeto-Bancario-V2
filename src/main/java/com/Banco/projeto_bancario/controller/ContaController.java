@@ -1,5 +1,6 @@
 package com.Banco.projeto_bancario.controller;
 
+import com.Banco.projeto_bancario.dto.ContaExibicaoDto;
 import com.Banco.projeto_bancario.model.Conta;
 import com.Banco.projeto_bancario.model.Transacao;
 import com.Banco.projeto_bancario.repository.ContaRepository;
@@ -12,6 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static java.lang.Double.sum;
 
 @RestController
 @RequestMapping("/contas")
@@ -27,11 +30,6 @@ public class ContaController {
     @Autowired
     private TransacaoRepository transacaoRepository;
 
-    @GetMapping
-    public List<Conta> listarTodos(){
-        return repository.findAll();
-    }
-
     @PostMapping
     public Conta criarConta(@Valid @RequestBody Conta conta){
         return repository.save(conta);
@@ -46,6 +44,26 @@ public class ContaController {
     @GetMapping("/{id}/extrato")
     public List<Transacao> verExtrato(@PathVariable Long id){
         return transacaoRepository.findByContaId(id);
+    }
+
+    @GetMapping("/saldo-total")
+    public Double getSaldoTotal() {
+        List<Conta> contas = repository.findByAtivoTrue();
+
+        return contas.stream().mapToDouble(Conta::getSaldo).sum();
+    }
+
+    @GetMapping
+    public List<ContaExibicaoDto> listarTodas(){
+        List<Conta> contas = repository.findByAtivoTrue();
+
+        return contas.stream().map(ContaExibicaoDto::new).toList();
+    }
+
+    @DeleteMapping("/{id}")
+    public String deletarConta(@PathVariable Long id){
+        service.desativarConta(id);
+        return "Conta desativa com sucesso!";
     }
 
 }
